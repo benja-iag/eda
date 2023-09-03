@@ -2,112 +2,95 @@ import java.util.Scanner;
 import controllers.*;
 import models.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+
 public class Main {
 
     private static SongController songController = new SongController();
-    private static PlayerController playerController = new PlayerController();
-    private static HistoryController historyController = new HistoryController();
 
+    /* Esta función sirve para leer información desde un archivo CSV. */
+    public static void ReadCSV(SongController songController) {
+        /* Array de songs */
+
+        String csvFile = "data.csv";
+        String line = "";
+        String cvsSplitBy = ",(?![^\\[]*\\])";
+        int yearIndex = 1;
+        int artistsIndex = 3;
+        int idIndex = 8;
+        int nameIndex = 14;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(cvsSplitBy);
+                String year = values[yearIndex];
+                String artists = values[artistsIndex];
+                String id = values[idIndex];
+                String name = values[nameIndex];
+                
+
+                /* Así creo una canción! */
+                Song song = new Song(id, name, artists, year);
+                
+                System.out.printf("Ingresando canción: %s\n", song.toString());
+
+                /* Así accedo al controlador de canciones! */
+                songController.addSong(song);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        songController.searchSongByTitle("Por Que Me Dejaste - Remasterizado");
+    }
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int choice;
 
         do {
             System.out.println("\n--- Menú UDP Music ---");
-            System.out.println("1. Añadir canción");
-            System.out.println("2. Eliminar canción por título");
-            System.out.println("3. Buscar canción por título");
-            System.out.println("4. Añadir canción a lista de reproducción");
-            System.out.println("5. Reproducir siguiente canción");
-            System.out.println("6. Ver próxima canción en lista de reproducción");
-            System.out.println("7. Añadir canción al historial");
-            System.out.println("8. Ver última canción reproducida");
-            System.out.println("9. Salir");
+            System.out.println("1. Buscar canción por título");
+            System.out.println("2. Añadir canción a lista de reproducción");
+            System.out.println("3. Reproducir siguiente canción");
+            System.out.println("4. Ver próxima canción en lista de reproducción");
+            System.out.println("5. Ver últimas 5 canciones reproducida");
+            System.out.println("6. Salir");
+            System.out.println("7. Agregar canciones!");
             System.out.print("Elige una opción: ");
 
             choice = scanner.nextInt();
-            scanner.nextLine();  // Consumir el salto de línea
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
-                    System.out.print("Introduce el título de la canción: ");
-                    String title = scanner.nextLine();
-                    System.out.print("Introduce el artista de la canción: ");
-                    String artist = scanner.nextLine();
-                    // Aquí puedes agregar más detalles como duración, etc.
-                    songController.addSong(new Song(title, artist, 0));  // 0 es un placeholder para la duración
-                    System.out.println("Canción añadida!");
+                    System.out.print("Introduce el título de la canción a buscar: ");
                     break;
                 case 2:
-                    System.out.print("Introduce el título de la canción a eliminar: ");
-                    title = scanner.nextLine();
-                    songController.deleteSongByTitle(title);
-                    System.out.println("Canción eliminada!");
+                    System.out.print("Introduce el id de la canción para añadir a la lista de reproducción: ");
                     break;
                 case 3:
-                    System.out.print("Introduce el título de la canción a buscar: ");
-                    title = scanner.nextLine();
-                    Song foundSong = songController.searchSongByTitle(title);
-                    if (foundSong != null) {
-                        System.out.println("Canción encontrada: " + foundSong.getTitle() + " - " + foundSong.getArtist());
-                    } else {
-                        System.out.println("Canción no encontrada.");
-                    }
+                    System.out.print("Reproduciendo siguiente canción: ");
                     break;
                 case 4:
-                    System.out.print("Introduce el título de la canción a añadir a la lista de reproducción: ");
-                    title = scanner.nextLine();
-                    Song songToAdd = songController.searchSongByTitle(title);
-                    if (songToAdd != null) {
-                        playerController.addSongToPlaylist(songToAdd);
-                        System.out.println("Canción añadida a la lista de reproducción!");
-                    } else {
-                        System.out.println("Canción no encontrada.");
-                    }
+                    System.out.print("Próxima canción: ");
                     break;
                 case 5:
-                    Song nextSong = playerController.playNextSong();
-                    if (nextSong != null) {
-                        System.out.println("Reproduciendo: " + nextSong.getTitle() + " - " + nextSong.getArtist());
-                        historyController.addSongToHistory(nextSong);
-                    } else {
-                        System.out.println("No hay más canciones en la lista de reproducción.");
-                    }
+                    System.out.print("Últimas 5 canciones reproducidas: ");
                     break;
                 case 6:
-                    Song upcomingSong = playerController.peekNextSong();
-                    if (upcomingSong != null) {
-                        System.out.println("Próxima canción: " + upcomingSong.getTitle() + " - " + upcomingSong.getArtist());
-                    } else {
-                        System.out.println("No hay más canciones en la lista de reproducción.");
-                    }
+                    System.out.println("¡Hasta luego!");
                     break;
                 case 7:
-                    System.out.print("Introduce el título de la canción a añadir al historial: ");
-                    title = scanner.nextLine();
-                    Song songToHistory = songController.searchSongByTitle(title);
-                    if (songToHistory != null) {
-                        historyController.addSongToHistory(songToHistory);
-                        System.out.println("Canción añadida al historial!");
-                    } else {
-                        System.out.println("Canción no encontrada.");
-                    }
-                    break;
-                case 8:
-                    Song lastPlayed = historyController.peekLastPlayedSong();
-                    if (lastPlayed != null) {
-                        System.out.println("Última canción reproducida: " + lastPlayed.getTitle() + " - " + lastPlayed.getArtist());
-                    } else {
-                        System.out.println("No hay canciones en el historial.");
-                    }
-                    break;
-                case 9:
-                    System.out.println("¡Hasta luego!");
+                    System.out.println("Agregar canciones a UDPMusic.");
+                    ReadCSV(songController);
                     break;
                 default:
                     System.out.println("Opción no válida. Por favor, elige una opción del menú.");
             }
-        } while (choice != 9);
+        } while (choice != 6);
 
         scanner.close();
     }
