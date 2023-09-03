@@ -43,8 +43,6 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        songController.searchSongByTitle("Por Que Me Dejaste - Remasterizado");
     }
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);

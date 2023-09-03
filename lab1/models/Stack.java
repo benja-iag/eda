@@ -1,58 +1,49 @@
 package models;
 
-public class Stack {
+interface StackInterface {
+    // Inserta una canción en el top de la pila
+    public void push(Song song);
+
+    // Saca una canción del top de la pila
+    public Song pop();
+
+    // "Mira" la canción del top de la pila
+    public Song peek();
+
+    // Verifica si la pila está vacía
+    public boolean isEmpty();
+
+    // Imprime la pila
+    public void print();
+}
+
+public class Stack implements StackInterface {
     private Node top;
 
-    private class Node {
-        Song song;
-        Node next;
-
-        Node(Song song) {
-            this.song = song;
-            this.next = null;
-        }
+    public Stack() {
+        this.top = null;
     }
 
-    // Esta función inserta una canción en el top de la pila
+    // Inserta una canción en el top de la pila
     public void push(Song song) {
-
-        this.top.next = new Node(song);
-        this.top = this.top.next;
-
     }
 
-    // Esta función saca una canción del top de la pila
+    // Saca una canción del top de la pila
     public Song pop() {
-
-        Song temp_top = this.top.song;
-        this.top = this.top.next;
-        return temp_top;
-
+        return null;
     }
 
-    // Esta función "mira" la canción del top de la pila
+    // "Mira" la canción del top de la pila
     public Song peek() {
-
-        return this.top.song;
-
+        return null;
     }
 
-    // Esta función "mira" la canción del fondo de la pila
+    // Verifica si la pila está vacía
     public boolean isEmpty() {
-
-        return this.top == null;
-
+        return true;
     }
 
-    // Esta función imprime la pila
+    // Imprime la pila
     public void print() {
-
-        Node current = this.top;
-
-        while (current != null) {
-            System.out.println(current.song);
-            current = current.next;
-        }
-
     }
 }
