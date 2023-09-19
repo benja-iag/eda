@@ -26,6 +26,15 @@ public class LinkedList implements LinkedListInterface {
 
     // Agrega una canción al final de la lista
     public void add(Song song) {
+        if (this.head == null) {
+            this.head = new Node(song);
+        } else {
+            Node current = this.head;
+            while (current.getNext() != null) {
+                current = current.getNext();
+            }
+            current.setNext(new Node(song));
+        }
     }
 
     // Elimina una canción específica de la lista
@@ -44,5 +53,11 @@ public class LinkedList implements LinkedListInterface {
 
     // Imprimir todas las canciones
     public void print() {
+        System.out.println("Canciones:");
+        Node current = this.head;
+        while (current != null) {
+            System.out.println(current.getSong().toString());
+            current = current.getNext();
+        }
     }
 }

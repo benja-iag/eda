@@ -12,7 +12,7 @@ public class Main {
     private static SongController songController = new SongController();
 
     /* Esta función sirve para leer información desde un archivo CSV. */
-    public static void ReadCSV(SongController songController) {
+    public static void ReadCSV(SongController songController, int MaxSongs) {
         /* Array de songs */
 
         String csvFile = "data.csv";
@@ -23,8 +23,16 @@ public class Main {
         int idIndex = 8;
         int nameIndex = 14;
 
+        int count = 0;
+
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            br.readLine();
             while ((line = br.readLine()) != null) {
+                if (count == MaxSongs) {
+                    break;
+                }
+
+                count++;
                 String[] values = line.split(cvsSplitBy);
                 String year = values[yearIndex];
                 String artists = values[artistsIndex];
@@ -33,10 +41,9 @@ public class Main {
                 
 
                 /* Así creo una canción! */
-                Song song = new Song(id, name, artists, year);
-                
+                Song song = new Song(name, artists, year, id);
                 System.out.printf("Ingresando canción: %s\n", song.toString());
-
+                
                 /* Así accedo al controlador de canciones! */
                 songController.addSong(song);
             }
@@ -64,7 +71,7 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    System.out.print("Introduce el título de la canción a buscar: ");
+                    songController.printAllSongs();
                     break;
                 case 2:
                     System.out.print("Introduce el id de la canción para añadir a la lista de reproducción: ");
@@ -83,7 +90,7 @@ public class Main {
                     break;
                 case 7:
                     System.out.println("Agregar canciones a UDPMusic.");
-                    ReadCSV(songController);
+                    ReadCSV(songController, 10);
                     break;
                 default:
                     System.out.println("Opción no válida. Por favor, elige una opción del menú.");

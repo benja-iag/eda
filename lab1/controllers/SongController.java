@@ -13,6 +13,10 @@ public class SongController {
         this.songList.add(song);
     }
 
+    public void printAllSongs() {
+        this.songList.print();
+    }
+
     /* Complementar con funciones faltantes! */
 
 }

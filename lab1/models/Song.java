@@ -43,7 +43,7 @@ public class Song implements SongInterface{
         return null;
     };
     public String toString() {
-        return null;
+        return this.title + " - " + this.artist + " (" + this.year + ")";
     };
 
     // Setters
